@@ -6,28 +6,29 @@ const bcrypt = require("bcrypt");
 const user = require('../models/user_model')
 const validateUser = require("../validation/User");
 
-//*@route    GET user/all
-//*@desc     Get all users
-//*@access   Public
-router.get("/all", (req, res) => {
+//! DEVELOPMENT ONLY
+// //*@route    GET user/all
+// //*@desc     Get all users
+// //*@access   Public
+// router.get("/all", (req, res) => {
 
-    let errors = {};
+//     let errors = {};
 
-    user.find()
-        .then(users => {
-            if (!users) {
-                errors.noUser = "There are no users";
-                res.status(404).json(errors);
-            }
-            res.json(users);
-        })
-        .catch(err => res.status(404).json({ noUser: "There are no users" }));
-});
+//     user.find()
+//         .then(users => {
+//             if (!users) {
+//                 errors.noUser = "There are no users";
+//                 res.status(404).json(errors);
+//             }
+//             res.json(users);
+//         })
+//         .catch(err => res.status(404).json({ noUser: "There are no users" }));
+// });
 
 //*@route   GET user/getUser
 //*@desc    Get all users from one username
 //*@access  Public
-router.get("/username", (req, res) => {
+router.post("/username", (req, res) => {
 
     user.find({ username: req.body.username })
         .then(user => {

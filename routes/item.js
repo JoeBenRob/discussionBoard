@@ -4,6 +4,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 
 const item = require('../models/item_model')
+const user = require('../models/user_model')
 const validateItem = require("../validation/item");
 
 //*@route    GET item/all
@@ -29,6 +30,8 @@ router.get("/all", (req, res) => {
 //*@access  Public
 router.get("/item", (req, res) => {
 
+    let errors = {};
+
     item.find({ items: req.body.items })
         .then(item => {
             if (!item) {
@@ -45,16 +48,32 @@ router.get("/item", (req, res) => {
 //*@access  Public
 router.post("/create", (req, res) => {
 
-    const { errors, isValid } = validateItem(req.body);
-    if (!isValid) {
-        return res.status(400).json(errors);
-    }
-    const newItem = new item({
-        name: req.body.name,
-        content: req.body.content,
-    });
-    newItem.save().then(res.send('complete'))
-        .catch(err => console.log(err));
+
+    user.findOne({ username: req.body.username }).then(foundUser => {
+
+        const hashedValue = foundUser.password;
+        const value = req.body.inputPassword;
+
+        bcrypt.compare(value, hashedValue).then(isMatch => {
+
+            if (!isMatch) {
+                return res.status(400).json("incorrect password");
+            } else {
+                const { errors, isValid } = validateItem(req.body);
+                if (!isValid) {
+                    return res.status(400).json(err);
+                }
+                else {
+                    const newItem = new item({
+                        name: req.body.name,
+                        content: req.body.content,
+                    });
+                    newItem.save().then(res.send('complete'))
+                        .catch(err => console.log(err));
+                }
+            };
+        });
+    })
 });
 
 // @route   PUT item/update
@@ -69,25 +88,38 @@ router.put("/update", (req, res) => {
         content: req.body.content,
     });
 
-    item.find({ name: req.body.name })
-        .then(item => {
-            if (!item) {
-                errors.noItem = "There are no items with this name";
-                res.status(404).json(errors);
-            }
-            item.remove().then(() => {
-                res.json({ success: true });
-            })
-                .catch(err =>
-                    res.status(404).json({ itemNotFound: "No item found" })
-                );
+    user.findOne({ username: req.body.username }).then(foundUser => {
 
-            newItem.save().then(res.send('complete'))
-                .catch(err => console.log(err));
+        const hashedValue = foundUser.password;
+        const value = req.body.inputPassword;
 
-        })
-        .catch(err => res.status(404).json({ noItem: "There is no item with this name" }));
+        bcrypt.compare(value, hashedValue).then(isMatch => {
 
+            if (!isMatch) {
+                return res.status(400).json("incorrect password");
+            } else {
+
+                item.findOne({ name: req.body.name })
+                    .then(item => {
+                        if (!item) {
+                            errors.noItem = "There are no items with this name";
+                            res.status(404).json(errors);
+                        }
+                        item.remove().then(() => {
+                            res.json({ success: true });
+                        })
+                            .catch(err =>
+                                res.status(404).json({ itemNotFound: "No item found" })
+                            )
+                            .then(() => {
+                                newItem.save().then(res.send('complete'))
+                            })
+                            .catch(err => console.log(err));
+                    })
+                    .catch(err => res.status(404).json({ noItem: "There is no item with this name" }));
+            };
+        });
+    });
 });
 
 //*@route   DELETE item/delete
@@ -96,9 +128,25 @@ router.put("/update", (req, res) => {
 router.delete("/delete", (req, res) => {
 
     let errors = {};
-    item.findOneAndDelete({ 'name': req.body.name })
-        .then(() =>
-            res.send('complete'));
+
+    user.findOne({ username: req.body.username }).then(foundUser => {
+
+        const hashedValue = foundUser.password;
+        const value = req.body.inputPassword;
+
+        bcrypt.compare(value, hashedValue).then(isMatch => {
+
+            if (!isMatch) {
+                return res.status(400).json("incorrect password");
+            } else {
+                item.findOneAndDelete({ 'name': req.body.name })
+                    .then(() => {
+                        res.send('complete')
+                    })
+                    .catch(err => res.status(404).json({ noItem: "There is no item with this name" }));
+            };
+        });
+    })
 });
 
 //*@route   DELETE item/deleteAll
@@ -108,9 +156,23 @@ router.delete("/deleteAll", (req, res) => {
 
     let errors = {};
 
-    item.deleteMany({ 'name': req.body.name })
-        .then(() =>
-            res.send('complete'));
+    user.findOne({ username: req.body.username }).then(foundUser => {
+
+        const hashedValue = foundUser.password;
+        const value = req.body.inputPassword;
+
+        bcrypt.compare(value, hashedValue).then(isMatch => {
+
+            if (!isMatch) {
+                return res.status(400).json("incorrect password");
+            } else {
+                item.deleteMany({ 'name': req.body.name })
+                    .then(() =>
+                        res.send('complete'));
+            }
+        }
+        )
+    })
 });
 
 module.exports = router;
