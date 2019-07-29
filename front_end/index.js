@@ -74,26 +74,25 @@ function addToTable(newEntry, aRow) {
 //delete
 
 function destroy() {
-    console.log(event)
 
-    // let body = {
-    //     "id": event.target.offsetParent.id
-    // }
+    let body = {
+        "id": event.target.offsetParent.id
+    }
 
-    // let req = new XMLHttpRequest();
-    // req.onload = () => {
-    //     if (req.status === 200) {
-    //         console.log(req);
-    //     } else {
-    //         const reason = new Error("Rejected");
-    //         console.log(reason);
-    //     }
-    // };
+    let req = new XMLHttpRequest();
+    req.onload = () => {
+        if (req.status === 200) {
+            console.log(req);
+        } else {
+            const reason = new Error("Rejected");
+            console.log(reason);
+        }
+    };
 
-    // req.open("DELETE", "http://localhost:5000/item/delete");
-    // req.setRequestHeader("Content-Type", "application/json");
-    // req.send(JSON.stringify(body));
-    // readAll();
+    req.open("DELETE", "http://localhost:5000/item/delete");
+    req.setRequestHeader("Content-Type", "application/json");
+    req.send(JSON.stringify(body));
+    readAll();
 };
 
 
