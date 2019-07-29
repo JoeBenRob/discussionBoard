@@ -49,7 +49,7 @@ router.post("/create", (req, res) => {
 //*@access  Public
 router.delete("/delete", (req, res) => {
 
-    item.findOneAndDelete({ '_id': req.body._id })
+    item.findOneAndDelete({ '_id': req.body.id })
         .then(() => {
             res.send('complete')
         })
