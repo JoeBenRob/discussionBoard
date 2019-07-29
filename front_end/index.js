@@ -62,8 +62,10 @@ function addToTable(newEntry, aRow) {
     let content = document.createElement('td');
     content.innerHTML = newEntry.content;
     let deleteButton = document.createElement('td');
-    deleteButton.innerHTML = `<button type="button" class="btn btn-secondary" onclick='destroy(${newEntry.poseID})' > Delete</button >`;
-
+    deleteButton.id = newEntry._id;
+    deleteButton.innerHTML = `<button type="button" class="btn btn-secondary" > Delete</button >`;
+    deleteButton.onclick = destroy;
+    // console.log(deleteButton.id);
     aRow.appendChild(username);
     aRow.appendChild(content);
     aRow.appendChild(deleteButton);
@@ -71,11 +73,29 @@ function addToTable(newEntry, aRow) {
 
 
 //delete
-function destroy(id) {
-    makeRequest("DELETE", `${itemURL}delete/${id}`).then(() => {
-        readAll();
-    });
-}
+
+function destroy() {
+
+    let body = {
+        "id": event.target.offsetParent.id
+    }
+
+    let req = new XMLHttpRequest();
+    req.onload = () => {
+        if (req.status === 200) {
+            console.log(req);
+        } else {
+            const reason = new Error("Rejected");
+            console.log(reason);
+        }
+    };
+
+    req.open("DELETE", "http://localhost:5000/item/delete");
+    req.setRequestHeader("Content-Type", "application/json");
+    req.send(JSON.stringify(body));
+    readAll();
+};
+
 
 
 //constructor
@@ -88,13 +108,34 @@ function itemMaker(username, content) {
 }
 
 
-//create
-function create() {
-    let aPost = itemMaker(username, content);
-    console.log(aPost);
-    makeRequest("POST", `${itemURL}create`, aPost).then(() => {
-    }).catch((error) => { console.log(error.message) }).then(readAll());
-}
+// //create
+// function create() {
+//     let aPost = itemMaker(username, content);
+//     console.log(aPost);
 
+//     makeRequest("POST", `${itemURL}create`, aPost).then(() => {
+//     }).catch((error) => { console.log(error.message) }).then(readAll());
+// }
+
+
+// create
+function create() {
+    let item = itemMaker(username, content);
+
+    let req = new XMLHttpRequest();
+    req.onload = () => {
+        if (req.status === 200) {
+            console.log(req);
+        } else {
+            const reason = new Error("Rejected");
+            console.log(reason);
+        }
+    };
+
+    req.open("POST", "http://localhost:5000/item/create");
+    req.setRequestHeader("Content-Type", "application/json");
+    req.send(JSON.stringify(item));
+    readAll();
+}
 
 readAll();
