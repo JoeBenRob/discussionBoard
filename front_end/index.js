@@ -1,23 +1,22 @@
 const itemURL = "http://localhost:5000/item/";
 
 
-const makeRequest = (method, url, body) => {
-    return new Promise(
-        function (res, rej) {
-            const req = new XMLHttpRequest();
-            req.onload = () => {
-                if (req.status === 200) {
-                    res(req.response);
-                } else {
-                    const reason = new Error('Error');
-                    rej(reason);
-                }
+function makeRequest(requestType, url, whatToSend) {
+    return new Promise((resolve, reject) => {
+        let req = new XMLHttpRequest();
+        req.onload = () => {
+            if (req.status === 200) {
+                resolve(req);
+            } else {
+                const reason = new Error("Rejected");
+                reject(reason);
             }
-            req.open(method, url)
-            req.send(body);
-        }
-    )
+        };
+        req.open(requestType, url);
+        req.send(whatToSend);
+    });
 }
+
 
 
 function removeAllChildren(id) {
@@ -93,7 +92,7 @@ function itemMaker(username, content) {
 function create() {
     let aPost = itemMaker(username, content);
     console.log(aPost);
-    makeRequest("POST", `${itemURL}create`, JSON.stringify(aPost)).then(() => {
+    makeRequest("POST", `${itemURL}create`, aPost).then(() => {
     }).catch((error) => { console.log(error.message) }).then(readAll());
 }
 
