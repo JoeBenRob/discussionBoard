@@ -46,7 +46,7 @@ const readAll = () => {
             tableContainer.className = "table table-hover";
 
             // creating table rows and adding data into the rows
-            for (let i = 0; i < data.length; i++) {
+            for (let i = data.length - 1; i > -1; i--) {
                 let aRow = document.createElement('tr')
                 tableContainer.appendChild(aRow);
                 addToTable(data[i], aRow);
@@ -65,7 +65,6 @@ function addToTable(newEntry, aRow) {
     deleteButton.id = newEntry._id;
     deleteButton.innerHTML = `<button type="button" class="btn btn-secondary" > Delete</button >`;
     deleteButton.onclick = destroy;
-    // console.log(deleteButton.id);
     aRow.appendChild(username);
     aRow.appendChild(content);
     aRow.appendChild(deleteButton);
@@ -75,25 +74,26 @@ function addToTable(newEntry, aRow) {
 //delete
 
 function destroy() {
+    console.log(event)
 
-    let body = {
-        "id": event.target.offsetParent.id
-    }
+    // let body = {
+    //     "id": event.target.offsetParent.id
+    // }
 
-    let req = new XMLHttpRequest();
-    req.onload = () => {
-        if (req.status === 200) {
-            console.log(req);
-        } else {
-            const reason = new Error("Rejected");
-            console.log(reason);
-        }
-    };
+    // let req = new XMLHttpRequest();
+    // req.onload = () => {
+    //     if (req.status === 200) {
+    //         console.log(req);
+    //     } else {
+    //         const reason = new Error("Rejected");
+    //         console.log(reason);
+    //     }
+    // };
 
-    req.open("DELETE", "http://localhost:5000/item/delete");
-    req.setRequestHeader("Content-Type", "application/json");
-    req.send(JSON.stringify(body));
-    readAll();
+    // req.open("DELETE", "http://localhost:5000/item/delete");
+    // req.setRequestHeader("Content-Type", "application/json");
+    // req.send(JSON.stringify(body));
+    // readAll();
 };
 
 
