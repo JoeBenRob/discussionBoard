@@ -3,14 +3,13 @@ const mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var itemSchema = new Schema({
-    name: {
+    username: {
         type: String,
-        unique: true,
-        required: true, index: true
+        required: true
     },
     content: {
         type: String,
-        required: true,
+        required: true
     }
 });
 
