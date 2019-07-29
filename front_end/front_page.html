@@ -33,40 +33,38 @@
             </div>
         </div>
     </nav>
+    <form id="createItem">
+        <div class="container p-3 mb-2 bg-secondary text-white">
+            <div>
+                <input type="text" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" id="username">
+            </div>
 
-    <div class="container p-3 mb-2 bg-secondary text-white">
-        <div>
-            <input type="text" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" id="input_username">
+            <div>
+                <input type="text" placeholder="Content" aria-label="Content" aria-describedby="basic-addon1" id="content">
+            </div>
+
+            <div>
+                <button type="button" class="btn btn-primary" onclick="create()" id="create_post">Create</button>
+            </div>
+
         </div>
-
-        <div>
-            <input type="text" placeholder="Content" aria-label="Content" aria-describedby="basic-addon1" id="input_content">
-        </div>
-
-        <div>
-            <button type="button" class="btn btn-primary" id="create_post">Create</button>
-        </div>
-
-    </div>
+    </form>
 
     <!-- Post Table -->
     <div class="container p-3 mb-2 bg-secondary text-white">
         <div>
             <table class="table text-white" id="table">
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Content</th>
-                        <th>Remove</th>
-                    </tr>
-                </thead>
-
-                <tbody id="table_body">
-                </tbody>
+                <tr>
+                    <th>Username</th>
+                    <th>Content</th>
+                    <th>Remove</th>
+                </tr>
             </table>
         </div>
     </div>
 
 </body>
+
+<script src="index.js"></script>
 
 </html>

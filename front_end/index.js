@@ -1,18 +1,22 @@
+const itemURL = "http://localhost:5000/item/";
 
-function makeRequest(requestType, url, whatToSend) {
-    return new Promise((resolve, reject) => {
-        let req = new XMLHttpRequest();
-        req.onload = () => {
-            if (req.status === 200) {
-                resolve(req);
-            } else {
-                const reason = new Error("Rejected");
-                reject(reason);
+
+const makeRequest = (method, url, body) => {
+    return new Promise(
+        function (res, rej) {
+            const req = new XMLHttpRequest();
+            req.onload = () => {
+                if (req.status === 200) {
+                    res(req.response);
+                } else {
+                    const reason = new Error('Error');
+                    rej(reason);
+                }
             }
-        };
-        req.open(requestType, url);
-        req.send(whatToSend);
-    });
+            req.open(method, url)
+            req.send(body);
+        }
+    )
 }
 
 
@@ -54,15 +58,15 @@ const readAll = () => {
 
 
 function addToTable(newEntry, aRow) {
-    let itemUsername = document.createElement('td');
-    itemUsername.innerHTML = newEntry.itemUsername;
-    let itemContent = document.createElement('td');
-    itemContent.innerHTML = newEntry.itemContent;
+    let username = document.createElement('td');
+    username.innerHTML = newEntry.username;
+    let content = document.createElement('td');
+    content.innerHTML = newEntry.content;
     let deleteButton = document.createElement('td');
     deleteButton.innerHTML = `<button type="button" class="btn btn-secondary" onclick='destroy(${newEntry.poseID})' > Delete</button >`;
 
-    aRow.appendChild(itemUsername);
-    aRow.appendChild(itemContent);
+    aRow.appendChild(username);
+    aRow.appendChild(content);
     aRow.appendChild(deleteButton);
 }
 
@@ -76,10 +80,10 @@ function destroy(id) {
 
 
 //constructor
-function itemMaker(itemUsername, itemContent) {
+function itemMaker(username, content) {
     const anItem = {
-        username: itemUsername.value,
-        content: itemContent.value
+        username: username.value,
+        content: content.value
     };
     return anItem;
 }
@@ -87,9 +91,11 @@ function itemMaker(itemUsername, itemContent) {
 
 //create
 function create() {
-    let aPost = poseMaker(postUsername, postContent);
+    let aPost = itemMaker(username, content);
     console.log(aPost);
     makeRequest("POST", `${itemURL}create`, JSON.stringify(aPost)).then(() => {
     }).catch((error) => { console.log(error.message) }).then(readAll());
 }
 
+
+readAll();
